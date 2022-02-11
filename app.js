@@ -7,7 +7,7 @@ const MongoClient = mongo.MongoClient;
 // const mongourl = "mongodb://localhost:27017"
 const mongourl = "mongodb+srv://test:123@cluster0.qy83a.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
 const df = require('dotenv').config()
-let port= process.env.port || 5000;
+let port= process.env.PORT || 5000;
 const bodyParser = require('body-parser')
 const cors= require('cors')
 
