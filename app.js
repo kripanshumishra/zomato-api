@@ -1,8 +1,9 @@
 let db;
 const express = require("express")
 const app = express()
-const {MongoClient} = require('mongodb');
-// const MongoClient = mongo.MongoClient;
+// const {MongoClient} = require('mongodb');
+const mongo= require('mongodb');
+const MongoClient = mongo.MongoClient;
 // const mongourl = "mongodb://localhost:27017"
 const mongourl = "mongodb+srv://test:123@cluster0.qy83a.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
 const df = require('dotenv').config()
@@ -119,11 +120,40 @@ app.post('/placeOrder',(req,res)=>{
     })
 })
 
+//with post call we can del update receive whatever we want
+app.post('/menuItem', (req,res)=>{
+    console.log(req.body)
+    // console.log(req)
+    db.collection('menu').find({menu_id:{$in:req.body}}).toArray((err,result)=>{
+        if(err) console.log(err)
+        res.send(result)
+    })
+})
+
 // deleting the order req in database
 app.delete('/deleteOrders',(req,res)=>{
     db.collection('orders').remove({},(err,result)=>{ // this will delete all the data if you want to delete specific data then pass the query
         if(err) throw err
         res.send(result)
+    })
+})
+
+// update the order req in database
+app.put('/updateOrders/:id',(req,res)=>{
+    let oId = mongo.ObjectId(req.params.id)
+    let status = req.query.status ? req.query.status:'Pending' // ternary operator
+    let {bank_name, bank_status}=req.body
+    db.collection('orders').updateOne({_id:oId},
+        {$set:{
+            "status":status,
+            bank_name,
+            bank_status
+            
+        }},
+        (err,result)=>{
+            console.log(status,"sasa")
+        if(err) throw err
+        res.send(` status updated to ${status}\n ${result}`)
     })
 })
 
@@ -137,3 +167,4 @@ MongoClient.connect(mongourl,(err,connection)=>{
     })
     
 })
+
