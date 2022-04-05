@@ -87,11 +87,13 @@ app.get('/filter/:mealid',(req,res)=>{
         query={"cuisines.cuisine_id":cuisineId,"mealTypes.mealtype_id":mealid}
     }
     else if(cuisineId){
-        query={"cuisines.cuisine_id":cuisineId,"mealTypes.mealtype_id":mealid,$and:[{cost:{$gt:lcost,$lt:hcost}}]}
+        query={"cuisines.cuisine_id":cuisineId,"mealTypes.mealtype_id":mealid}
     }
     else if (lcost&hcost){
         query={$and:[{cost:{$gt:lcost,$lt:hcost}}],"mealTypes.mealtype_id":mealid}
     }
+    
+   
     db.collection('restaurant').find(query).sort(sort).skip(skip).limit(limit).toArray((err,result)=>{
         if(err) console.err(err)
         res.send(result)
